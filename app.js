@@ -2,6 +2,7 @@ const express = require("express");
 const db = require("./db/connection")
 const { getTopics } = require("./controllers/topics.controller")
 const apiInfo = require('../backend_project_north/endpoints.json');
+const { getArticleById } = require("./controllers/articles.controller");
 
 const app = express()
 
@@ -16,7 +17,7 @@ app.get("/api", (req, res, next) => {
   });
  
 app.get("/api/topics", getTopics);
-
+app.get("/api/articles/:article_id", getArticleById);
 
 
 

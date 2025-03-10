@@ -45,3 +45,31 @@ describe("GET /api/topics", () => {
   })
 
 });
+
+describe("GET /api/articles/:article_id", () => {
+  test("200: Responds with an array of articles objects", async () => {
+  
+    const response = await request(app)
+      .get("/api/articles/1")
+      .expect(200);
+      
+      const articles = response.body
+
+      console.log(response,"que pasa con ese cuerpo")
+
+      expect(articles).toBeInstanceOf(Object);
+      expect(articles.length).toBeGreaterThan(0);
+
+      articles.forEach((article) => {
+          expect(article).toHaveProperty("author")
+          expect(article).toHaveProperty("title")
+          expect(article).toHaveProperty("article_id")
+          expect(article).toHaveProperty("body")
+          expect(article).toHaveProperty("topic")
+          expect(article).toHaveProperty("created_at")
+          expect(article).toHaveProperty("votes")
+          expect(article).toHaveProperty("article_img_url")
+      })
+  })
+
+});
