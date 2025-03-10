@@ -23,10 +23,9 @@ app.get("/api/articles/:article_id", getArticleById);
 
 app.use((err, req, res, next) => {
     // console.error(err);
-    const status = err.status || 400
-    const message = err.msg || "Bad Request"
+    const status = err.status || 500
+    const message = err.msg || "Internal server error"
     res.status(status).send({ msg: message })
-    // next();
 })
 
 module.exports = app; 

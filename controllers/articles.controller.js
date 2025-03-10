@@ -7,18 +7,16 @@ exports.getArticleById = async (req,res,next) => {
     try {
         const { article_id } = req.params;
 
-        if(!article_id) {
-            res.status(400).send({ msg:"Article ID is required" });
-        }
-
+        if (isNaN(article_id) || !article_id) {
+            return res.status(400).send({ msg: "Invalid article_id" });
+          }
         const articleById = await fetchArticlesById(article_id)
-        // console.log(articleById,"articlesssssss")
 
         if(!articleById || articleById===0) {
-            res.status(400).send({ msg:"Article not found" });
+           return res.status(404).send({ msg:"Article not found" });
         }
         
-        res.status(200).json([articleById])
+        res.status(200).send([articleById])
 
     } catch (err) {
       next(err)
