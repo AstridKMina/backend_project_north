@@ -2,7 +2,7 @@ const express = require("express");
 const db = require("./db/connection")
 const { getTopics } = require("./controllers/topics.controller")
 const apiInfo = require('../backend_project_north/endpoints.json');
-const { getArticleById } = require("./controllers/articles.controller");
+const { getArticleById, getAllArticles } = require("./controllers/articles.controller");
 
 const app = express()
 
@@ -18,11 +18,18 @@ app.get("/api", (req, res, next) => {
  
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/articles", getAllArticles);
+// app.get("/api/articles?sort_by=created_at&order=desc", getAllArticles);
+
+
 
 
 
 app.use((err, req, res, next) => {
     // console.error(err);
+    if (err.status && err.msg) {
+      return res.status(err.status).send({ msg: err.msg });
+  }
     const status = err.status || 500
     const message = err.msg || "Internal server error"
     res.status(status).send({ msg: message })
