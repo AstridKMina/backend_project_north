@@ -1,6 +1,6 @@
 const response = require("express");
 const db = require("../db/connection");
-const { fetchArticleById, fetchAllArticles, fetchArticleCommentsById, insertComments } = require("../models/articles.model");
+const { fetchArticleById, fetchAllArticles, fetchArticleCommentsById, insertComments, updateArticleById } = require("../models/articles.model");
 
 
 exports.getAllArticles = async (req, res, next) => {
@@ -91,6 +91,33 @@ exports.postComments = async (req, res, next) => {
     if (err.code === "23503") {
       return res.status(404).send({ msg: "User not found" });
     }
+    next(err)
+  }
+}
+
+exports.patchArticle = async (req, res, next) => {
+  try {
+    const { article_id } = req.params;
+
+    const { inc_votes } = req.body;
+
+    if (isNaN(article_id) || !article_id) {
+      return res.status(400).send({ msg: "Invalid article_id" });
+    }
+
+    if(!inc_votes) {
+      return res.status(400).send({ msg: "Missing required fields" });
+    }
+
+    if(typeof inc_votes !== "number") {
+      return res.status(400).send({ msg: "Invalid request body" });
+    }
+    
+    const updatedArticle = await updateArticleById(article_id, inc_votes)
+
+    res.status(200).send(updatedArticle);
+
+  } catch (err) {
     next(err)
   }
 }

@@ -103,3 +103,26 @@ exports.insertComments = async (article_id, body, username) => {
         throw err
     }
 };
+
+exports.updateArticleById = async (article_id, inc_votes) => {
+    try {
+        let baseQuery = `
+     UPDATE articles 
+     SET votes = votes + $1 
+WHERE article_id = $2
+RETURNING *;`;
+
+        const queryParams = [inc_votes, article_id];
+        const result = await db.query(baseQuery, queryParams)
+
+        if (!result.rows.length) {
+            throw { status: 404, msg: "Article not found" };
+        }
+
+        return result.rows[0];
+
+    } catch (err) {
+        throw err
+    }
+}
+

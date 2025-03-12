@@ -118,7 +118,7 @@ describe("GET /api/articles", () => {
   })
 })
 
-describe("/api/articles?order=desc", () => {
+describe("GET /api/articles?order=desc", () => {
   test("200: Responds with articles order in descending order by created_at", async () => {
     const response = await request(app)
       .get("/api/articles?sort_by=created_at&order=DESC")
@@ -304,3 +304,66 @@ describe("POST /api/articles/:article_id/comments", () => {
     expect(error).toEqual({ msg: "User not found" });
   })
 })
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: Updates the article votes and responds with the updated article", async () => {
+    const response = await request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 5 })
+      .expect(200);
+
+    expect(response.body).toMatchObject({
+      article_id: 1,
+      votes: expect.any(Number),
+    });
+
+    const article = response.body
+
+    expect(article.votes).toBeGreaterThan(0);
+  });
+  test("400: Responds with an error when 'article_id' is not a number", async () => {
+    const response = await request(app)
+      .patch("/api/articles/invalid_id")
+      .send({ inc_votes: 3 })
+      .expect(400);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Invalid article_id" });
+  });
+
+  test("400: Responds with an error when 'inc_votes' is missing", async () => {
+    const response = await request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(400);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Missing required fields" });
+  });
+
+  test("400: Responds with an error when 'inc_votes' is not a number", async () => {
+    const response = await request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "invalid" })
+      .expect(400);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Invalid request body" });
+  });
+
+  test("404: Responds with an error when article_id does not exist", async () => {
+    const response = await request(app)
+      .patch("/api/articles/9999")
+      .send({ inc_votes: 1 })
+      .expect(404);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Article not found" });
+  });
+
+});
+
