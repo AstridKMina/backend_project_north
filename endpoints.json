@@ -64,34 +64,117 @@
     }
   },
   "GET /api/articles?sort_by&order": {
-  "description": "Obtiene una lista de artículos ordenados por un campo especificado, en un orden ascendente o descendente.", 
-  "queries": [
-    {
-      "name": "sort_by",
-      "type": "string",
-      "description": "El campo por el que ordenar los artículos.",
-     " default": "created_at",
-      "allowedValues": ["created_at", "article_id", "title", "votes", "article_img_url", "author", "topic", "comment_count"]
-    },
-    {
-     " name": "order",
-     " type": "string",
-     " description": "El orden en el que se deben ordenar los artículos.",
-      "default": "ASC",
-     " allowedValues": ["ASC", "DESC"]
-    }
-  ],
-  "exampleResponse": [
-          {
-           " article_id": 1,
-           " title": "Article Title",
-            "created_at": "2021-01-01T00:00:00.000Z",
-           " votes": 100,
-           " article_img_url": "https://example.com/article1.jpg",
-           " author": "john_doe",
-           " topic": "technology",
-           " comment_count": 5
-          }
+    "description": "Obtiene una lista de artículos ordenados por un campo especificado, en un orden ascendente o descendente.",
+    "queries": [
+      {
+        "name": "sort_by",
+        "type": "string",
+        "description": "El campo por el que ordenar los artículos.",
+        " default": "created_at",
+        "allowedValues": [
+          "created_at",
+          "article_id",
+          "title",
+          "votes",
+          "article_img_url",
+          "author",
+          "topic",
+          "comment_count"
         ]
+      },
+      {
+        " name": "order",
+        " type": "string",
+        " description": "El orden en el que se deben ordenar los artículos.",
+        "default": "ASC",
+        " allowedValues": [
+          "ASC",
+          "DESC"
+        ]
+      }
+    ],
+    "exampleResponse": [
+      {
+        " article_id": 1,
+        " title": "Article Title",
+        "created_at": "2021-01-01T00:00:00.000Z",
+        " votes": 100,
+        " article_img_url": "https://example.com/article1.jpg",
+        " author": "john_doe",
+        " topic": "technology",
+        " comment_count": 5
+      }
+    ]
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "Fetches a list of comments for a specific article identified by its article ID.",
+    "queries": [
+      {
+        "allowedValues": [
+          "created_at",
+          "article_id",
+          "comment_id",
+          "votes",
+          "body",
+          "author"
+        ]
+      }
+    ],
+    "params": [
+      {
+        "name": "article_id",
+        "type": "integer",
+        "description": "The ID of the article for which to fetch the comments."
+      }
+    ],
+    "exampleResponse": [
+      {
+        "comment_id": 1,
+        "article_id": 1,
+        "body": "This is a comment on the article.",
+        "votes": 10,
+        "created_at": "2021-01-01T00:00:00.000Z",
+        "author": "john_doe"
+      },
+      {
+        "comment_id": 2,
+        "article_id": 1,
+        "body": "This is another comment.",
+        "votes": 5,
+        "created_at": "2021-01-02T00:00:00.000Z",
+        "author": "jane_doe"
+      }
+    ]
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "Adds a new comment to the specified article.",
+    "requestBody": {
+      "description": "An object containing the required fields to create a new comment.",
+      "required": true,
+      "content": {
+        "application/json": {
+          "example": {
+            "username": "butter_bridge",
+            "body": "This is a great article!"
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Successfully added the comment.",
+        "content": {
+          "application/json": {
+            "example": {
+              "comment_id": 1,
+              "article_id": 3,
+              "body": "This is a great article!",
+              "author": "butter_bridge",
+              "created_at": "2025-03-11T12:00:00.000Z"
+            }
+          }
+        }
+      }
     }
+  }
 }

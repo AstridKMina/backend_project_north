@@ -155,7 +155,7 @@ describe("/api/articles?order=desc", () => {
   test("400: Responds with an error message for invalid sort_by", async () => {
 
     const response = await request(app)
-    .get("/api/articles?sort_by=invalid_column&order=asc")
+      .get("/api/articles?sort_by=invalid_column&order=asc")
       .expect(400);
 
     const error = response.body
@@ -165,7 +165,7 @@ describe("/api/articles?order=desc", () => {
 
   test("400: Responds with an error message if order is invalid", async () => {
     const response = await request(app)
-    .get("/api/articles?sort_by=created_at&order=invalid")
+      .get("/api/articles?sort_by=created_at&order=invalid")
       .expect(400);
 
     const error = response.body
@@ -174,5 +174,133 @@ describe("/api/articles?order=desc", () => {
   });
 });
 
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: Responds with an array of comments objects", async () => {
+
+    const response = await request(app)
+      .get("/api/articles/1/comments")
+      .expect(200);
+
+    const comments = response.body
+
+    expect(comments).toBeInstanceOf(Array);
+    expect(comments.length).toBeGreaterThan(0);
+
+    comments.forEach((comment) => {
+      expect(comment).toHaveProperty("author")
+      expect(comment).toHaveProperty("comment_id")
+      expect(comment).toHaveProperty("article_id")
+      expect(comment).toHaveProperty("body")
+      expect(comment).toHaveProperty("created_at")
+      expect(comment).toHaveProperty("votes")
+    })
+  })
+  test("200: Responds with an array of comments objects", async () => {
+
+    const response = await request(app)
+      .get("/api/articles/2/comments")
+      .expect(200);
+
+    const comments = response.body
+
+    expect(comments).toBeInstanceOf(Array);
+    expect(comments.length).toBe(0);
+
+  })
+
+  test("400: Responds with an error message for invalid article_id", async () => {
+
+    const response = await request(app)
+      .get("/api/articles/invalid_id/comments")
+      .expect(400);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Invalid article_id" });
+
+  })
+  test("404: Responds with an error message for not found article_id", async () => {
+
+    const response = await request(app)
+      .get("/api/articles/999/comments")
+      .expect(404);
+
+    const error = response.body;
+
+    expect(error).toEqual({ msg: "Article not found" });
+  })
+})
 
 
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: Responds with a insert comment ", async () => {
+    const newComment = { username: "butter_bridge", body: "Great article!" };
+
+    const response = await request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201);
+
+    const comment = response.body
+
+    expect(comment).toBeInstanceOf(Object);
+
+
+    expect(comment).toHaveProperty("author");
+    expect(comment).toHaveProperty("article_id");
+    expect(comment).toHaveProperty("body");
+    expect(comment).toHaveProperty("comment_id");
+    expect(comment).toHaveProperty("created_at");
+    expect(comment.article_id).toBe(1);
+    expect(comment.author).toBe("butter_bridge");
+    expect(comment.body).toBe("Great article!");
+  })
+  test("400: Responds with an error message for missing body field", async () => {
+    const newComment = { username: "butter_bridge" };
+
+    const response = await request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Missing required fields" });
+
+  })
+  test("400: Responds with an error message for missing username field", async () => {
+    const newComment = { body: "Great article!" };
+
+    const response = await request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Missing required fields" });
+
+  })
+  test("404: Responds with an error message for not found article_id", async () => {
+
+    const response = await request(app)
+      .get("/api/articles/999/comments")
+      .expect(404);
+
+    const error = response.body;
+
+    expect(error).toEqual({ msg: "Article not found" });
+  })
+  test("404: Responds with an error message for not found user", async () => {
+    const newComment = { username: "astrid_mina", body: "Great article!" };
+
+    const response = await request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(404);
+
+    const error = response.body;
+
+    expect(error).toEqual({ msg: "User not found" });
+  })
+})

@@ -3,7 +3,7 @@ const {
 } = require("../db/seeds/utils");
 
 
-describe.only('Utils Functions', () => {
+describe('Utils Functions', () => {
 
   describe("convertTimestampToDate", () => {
     test("returns a new object", () => {

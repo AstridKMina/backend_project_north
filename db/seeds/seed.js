@@ -84,7 +84,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     .then(({  insertedArticles }) => {
 
       const formattedComments = formatComments(commentData, insertedArticles);
-      // console.log(formattedComments,"formattedcomeet------>")
+      
       const insertCommentsQuery = format(
         `INSERT INTO comments (article_id, body, votes, author, created_at) 
         VALUES %L RETURNING *;`, 
@@ -93,7 +93,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       return db.query(insertCommentsQuery);
     })
     .then(() => {
-      console.log("Database seeding completed.");
+     
     });
 };
 
