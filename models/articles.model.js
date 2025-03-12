@@ -1,7 +1,7 @@
 const db = require("../db/connection");
 
 
-exports.fetchAllArticles = async (sort_by = "created_at", order = "ASC") => {
+exports.fetchAllArticles = async (sort_by = "created_at", order = "DESC") => {
     try {
         const validSortColumns = ["created_at", "article_id", "title", "votes", "article_img_url", "author", "topic", "comment_count"];
 

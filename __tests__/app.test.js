@@ -128,18 +128,8 @@ describe("GET /api/articles", () => {
   })
 });
 
-describe("GET /api/articles?order=desc", () => {
+describe("GET /api/articles?order=asc", () => {
   test("200: Responds with articles order in descending order by created_at", async () => {
-    const response = await request(app)
-      .get("/api/articles?sort_by=created_at&order=DESC")
-      .expect(200)
-
-    const result = response.body
-
-    expect(result).toBeSortedBy("created_at", { descending: true });
-  });
-
-  test("200: Responds with articles order in ascending order by created_at", async () => {
     const response = await request(app)
       .get("/api/articles?sort_by=created_at&order=ASC")
       .expect(200)
@@ -147,21 +137,18 @@ describe("GET /api/articles?order=desc", () => {
     const result = response.body
 
     expect(result).toBeSortedBy("created_at", { ascending: true });
-
   });
 
-  test("200: Defaults to ascending order when order is not provided", async () => {
+  test("200: Responds with articles order in ascending order by created_at", async () => {
     const response = await request(app)
-
-      .get("/api/articles")
+      .get("/api/articles?sort_by=created_at&order=DESC")
       .expect(200)
 
     const result = response.body
 
-    expect(result).toBeSortedBy("created_at", { ascending: true });
+    expect(result).toBeSortedBy("created_at", { descending: true });
 
   });
-
   test("400: Responds with an error message for invalid sort_by", async () => {
 
     const response = await request(app)
@@ -436,6 +423,73 @@ describe("GET /api/users", () => {
     const error = response.body
 
     expect(error).toEqual({ msg: "Users not found" });
+  });
+});
+
+describe("GET /api/articles?order=desc", () => {
+  test("200: Responds with articles order in descending order by created_at", async () => {
+    const response = await request(app)
+      .get("/api/articles?sort_by=created_at&order=DESC")
+      .expect(200)
+
+    const result = response.body
+
+    expect(result).toBeSortedBy("created_at", { descending: true });
+  });
+
+  test("200: Responds with articles order in ascending order by author", async () => {
+    const response = await request(app)
+      .get("/api/articles?sort_by=author&order=ASC")
+      .expect(200)
+
+    const result = response.body
+
+    expect(result).toBeSortedBy("author", { ascending: true });
+
+  });
+
+  test("200: Defaults to descending order when order is not provided", async () => {
+    const response = await request(app)
+
+      .get("/api/articles?sort_by=created_at")
+      .expect(200)
+
+    const result = response.body
+
+    expect(result).toBeSortedBy("created_at", { descending: true });
+
+  });
+  test("200: Defaults to created_at when sort_by is not provided", async () => {
+    const response = await request(app)
+
+      .get("/api/articles?order=ASC")
+      .expect(200)
+
+    const result = response.body
+
+    expect(result).toBeSortedBy("created_at", { ascending: true });
+
+  });
+
+  test("400: Responds with an error message for invalid sort_by", async () => {
+
+    const response = await request(app)
+      .get("/api/articles?sort_by=invalid_column&order=asc")
+      .expect(400);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Invalid sort_by column" });
+  })
+
+  test("400: Responds with an error message if order is invalid", async () => {
+    const response = await request(app)
+      .get("/api/articles?sort_by=created_at&order=invalid")
+      .expect(400);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Invalid order value" });
   });
 });
 

@@ -6,7 +6,7 @@ const { fetchArticleById, fetchAllArticles, updateArticleById } = require("../mo
 exports.getAllArticles = async (req, res, next) => {
   try {
 
-    const { sort_by = "created_at", order = "ASC" } = req.query;
+    const { sort_by = "created_at", order = "DESC" } = req.query;
 
     const articles = await fetchAllArticles(sort_by, order)
 
