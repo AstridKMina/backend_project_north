@@ -6,14 +6,14 @@ exports.fetchAllTopics = async () => {
         let baseQuery = `
         SELECT
         slug, description
-        FROM topics`;
+        FROM topics;`;
 
         const result = await db.query(baseQuery);
 
         return result.rows;
 
     } catch (err) {
-
+        throw err
     }
 
 }

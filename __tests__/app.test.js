@@ -43,8 +43,18 @@ describe("GET /api/topics", () => {
       expect(topic).toHaveProperty("slug")
       expect(topic).toHaveProperty("description")
     })
-  })
+  });
+  test("404: Responds with an error when not topics found", async () => {
+    await db.query("DELETE FROM topics;");
+    
+    const response = await request(app)
+      .get("/api/topics")
+      .expect(404);
 
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Topics not found" });
+  });
 });
 
 describe("GET /api/articles/:article_id", () => {
@@ -91,7 +101,7 @@ describe("GET /api/articles/:article_id", () => {
 
     expect(error).toEqual({ msg: "Article not found" });
   })
-})
+});
 
 describe("GET /api/articles", () => {
   test("200: Responds with an array of articles objects", async () => {
@@ -116,7 +126,7 @@ describe("GET /api/articles", () => {
       expect(article).toHaveProperty("article_img_url")
     })
   })
-})
+});
 
 describe("GET /api/articles?order=desc", () => {
   test("200: Responds with articles order in descending order by created_at", async () => {
@@ -229,7 +239,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 
     expect(error).toEqual({ msg: "Article not found" });
   })
-})
+});
 
 
 describe("POST /api/articles/:article_id/comments", () => {
@@ -396,5 +406,36 @@ describe("DELETE /api/comments/:comment_id", () => {
     expect(error).toEqual({ msg: "Comment not found" });
   });
 
+});
+
+describe("GET /api/users", () => {
+  test("200: Responds with an array of users objects", async () => {
+
+    const response = await request(app)
+      .get("/api/users")
+      .expect(200);
+
+    const users = response.body
+
+    expect(users).toBeInstanceOf(Array);
+    expect(users.length).toBeGreaterThan(0);
+
+    users.forEach((user) => {
+      expect(user).toHaveProperty("name");
+      expect(user).toHaveProperty("username");
+      expect(user).toHaveProperty("avatar_url");
+    })
+  });
+  test("404: Responds with an error when not users found", async () => {
+    await db.query("DELETE FROM users;");
+    
+    const response = await request(app)
+      .get("/api/users")
+      .expect(404);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Users not found" });
+  });
 });
 

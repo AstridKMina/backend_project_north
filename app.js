@@ -4,6 +4,7 @@ const { getTopics } = require("./controllers/topics.controller")
 const apiInfo = require('../backend_project_north/endpoints.json');
 const { getArticleById, getAllArticles, patchArticle } = require("./controllers/articles.controller");
 const { postComments, getArticleCommentsById, deleteComment } = require("./controllers/comments.controller");
+const { getUsers } = require("./controllers/users.controller");
 
 const app = express()
 
@@ -25,11 +26,14 @@ app.get("/api/articles", getAllArticles);
 
 app.get("/api/articles/:article_id/comments", getArticleCommentsById);
 
-app.post("/api/articles/:article_id/comments",postComments)
+app.post("/api/articles/:article_id/comments", postComments);
 
-app.patch("/api/articles/:article_id",patchArticle);
+app.patch("/api/articles/:article_id", patchArticle);
 
-app.delete("/api/comments/:comment_id",deleteComment)
+app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get("/api/users", getUsers);
+
 
 app.use((err, req, res, next) => {
     // console.error(err);
