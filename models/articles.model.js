@@ -1,7 +1,7 @@
 const db = require("../db/connection");
 
 
-exports.fetchAllArticles = async (sort_by = "created_at", order = "DESC") => {
+exports.fetchAllArticles = async (sort_by = "created_at", order = "DESC", topic) => {
     try {
         const validSortColumns = ["created_at", "article_id", "title", "votes", "article_img_url", "author", "topic", "comment_count"];
 
@@ -23,13 +23,31 @@ exports.fetchAllArticles = async (sort_by = "created_at", order = "DESC") => {
             LEFT JOIN users u ON a.author = u.username
             LEFT JOIN topics t ON a.topic = t.slug
             LEFT JOIN comments c ON a.article_id = c.article_id
-            GROUP BY a.article_id, a.title, a.created_at, a.votes, a.article_img_url, u.username, t.slug
-            ORDER BY ${sort_by} ${order.toUpperCase()}
-        ;`;
+       `;
 
-        const result = await db.query(baseQuery);
+        const queryParams = []
+
+
+        if (topic) {
+
+            const topicExist = await db.query(`SELECT* FROM topics WHERE slug = $1;`, [topic]);
+
+            if (topicExist.rows.length === 0) {
+                throw { status: 404, msg: "Topic not found" };
+            }
+
+            baseQuery += ` WHERE t.slug = $1`;
+            queryParams.push(topic)
+        }
+
+        baseQuery += ` GROUP BY a.article_id, a.title, a.created_at, a.votes, a.article_img_url, u.username, t.slug`;
+        baseQuery += ` ORDER BY ${sort_by} ${order.toUpperCase()}`;
+
+
+        const result = await db.query(baseQuery, queryParams);
 
         return result.rows;
+
 
     } catch (err) {
         throw err;
@@ -45,7 +63,7 @@ FROM articles a
 LEFT JOIN users u ON a.author = u.username
 LEFT JOIN topics t ON a.topic = t.slug
 WHERE a.article_id = $1; 
-`
+`;
 
         const queryParams = [article_id];
 

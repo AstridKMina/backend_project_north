@@ -15,25 +15,51 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
-    "queries": [
-      "author",
-      "topic",
-      "sort_by",
-      "order"
-    ],
-    "exampleResponse": {
-      "articles": [
-        {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": "2018-05-30T15:59:13.341Z",
-          "votes": 0,
-          "comment_count": 6
+    "description": "Retrieves a list of articles. Allows filtering by topic and sorting by different criteria.",
+    "query_parameters": {
+      "sort_by": {
+        "type": "string",
+        "default": "created_at",
+        "description": "The field used to sort the articles. Possible values: 'created_at', 'article_id', 'title', 'votes', 'author', 'comment_count'."
+      },
+      "order": {
+        "type": "string",
+        "default": "DESC",
+        "description": "Sorting order. Possible values: 'ASC' or 'DESC'."
+      },
+      "topic": {
+        "type": "string",
+        "description": "Filters articles by a specific topic."
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "List of articles retrieved successfully.",
+        "example": [
+          {
+            "article_id": 1,
+            "title": "The World of JavaScript",
+            "created_at": "2024-03-10T12:00:00.000Z",
+            "votes": 100,
+            "article_img_url": "https://example.com/image.jpg",
+            "author": "john_doe",
+            "topic": "programming",
+            "comment_count": 5
+          }
+        ]
+      },
+      "400": {
+        "description": "Bad request (invalid parameter).",
+        "example": {
+          "msg": "Invalid sort_by column"
         }
-      ]
+      },
+      "404": {
+        "description": "Topic not found.",
+        "example": {
+          "msg": "Topic not found"
+        }
+      }
     }
   },
   "GET/api/articles/:article_id": {
@@ -62,49 +88,6 @@
         }
       ]
     }
-  },
-  "GET /api/articles?sort_by&order": {
-    "description": "Obtiene una lista de artículos ordenados por un campo especificado, en un orden ascendente o descendente.",
-    "queries": [
-      {
-        "name": "sort_by",
-        "type": "string",
-        "description": "El campo por el que ordenar los artículos.",
-        " default": "created_at",
-        "allowedValues": [
-          "created_at",
-          "article_id",
-          "title",
-          "votes",
-          "article_img_url",
-          "author",
-          "topic",
-          "comment_count"
-        ]
-      },
-      {
-        " name": "order",
-        " type": "string",
-        " description": "El orden en el que se deben ordenar los artículos.",
-        "default": "ASC",
-        " allowedValues": [
-          "ASC",
-          "DESC"
-        ]
-      }
-    ],
-    "exampleResponse": [
-      {
-        " article_id": 1,
-        " title": "Article Title",
-        "created_at": "2021-01-01T00:00:00.000Z",
-        " votes": 100,
-        " article_img_url": "https://example.com/article1.jpg",
-        " author": "john_doe",
-        " topic": "technology",
-        " comment_count": 5
-      }
-    ]
   },
   "GET /api/articles/:article_id/comments": {
     "description": "Fetches a list of comments for a specific article identified by its article ID.",
@@ -274,50 +257,6 @@
         "description": "No users found in the database",
         "body": {
           "msg": "Users not found"
-        }
-      }
-    }
-  },
-  "GET /api/articles?": {
-    "description": "Retrieves a list of articles with optional sorting queries.",
-    "queryParams": [
-      {
-        "name": "sort_by",
-        "type": "string",
-        "description": "Column name to sort the articles by (e.g., 'title', 'votes', 'created_at'). Defaults to 'created_at'."
-      },
-      {
-        "name": "order",
-        "type": "string",
-        "description": "Sorting order: 'asc' for ascending or 'desc' for descending. Defaults to 'desc'."
-      }
-    ],
-    "responses": {
-      "200": {
-        "description": "Returns a list of articles sorted according to the provided parameters.",
-        "content": {
-          "application/json": {
-            "example": [
-              {
-                "article_id": 1,
-                "title": "Interesting Article",
-                "topic": "news",
-                "author": "johndoe",
-                "created_at": "2023-05-15T10:30:00.000Z",
-                "votes": 100,
-                "comment_count": 5
-              },
-              {
-                "article_id": 2,
-                "title": "Another Great Read",
-                "topic": "sports",
-                "author": "janedoe",
-                "created_at": "2023-05-14T08:15:00.000Z",
-                "votes": 75,
-                "comment_count": 2
-              }
-            ]
-          }
         }
       }
     }

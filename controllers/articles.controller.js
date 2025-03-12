@@ -6,10 +6,25 @@ const { fetchArticleById, fetchAllArticles, updateArticleById } = require("../mo
 exports.getAllArticles = async (req, res, next) => {
   try {
 
-    const { sort_by = "created_at", order = "DESC" } = req.query;
+    const { sort_by = "created_at", order = "DESC", topic } = req.query;
 
-    const articles = await fetchAllArticles(sort_by, order)
+    if(topic && typeof topic !== "string") {
+      throw { status: 400 , msg: "Invalid topic"}
+      
+    }
 
+    let articles;
+
+    if(topic) {
+
+     articles = await fetchAllArticles(sort_by, order, topic)
+
+    } else {
+
+      articles = await fetchAllArticles(sort_by, order)
+
+    };
+    
     return res.status(200).send(articles);
 
   } catch (err) {
