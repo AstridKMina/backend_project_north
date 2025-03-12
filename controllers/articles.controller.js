@@ -39,3 +39,27 @@ exports.getArticleById = async (req, res, next) => {
     next(err)
   }
 }
+
+exports.getArticleCommentsById = async (req, res, next) => {
+  try {
+    const { article_id } = req.params;
+
+    if (isNaN(article_id || !article_id)) {
+      return res.status(400).send({ msg: "Invalid article_id" });
+    }
+
+    const article = await fetchArticleById(article_id);
+
+    if (!article) {
+      return res.status(404).send({ msg: "Article not found" });
+    }
+
+    const articleCommentsById = await fetchArticleCommentsById(article_id)
+
+    res.status(200).send(articleCommentsById)
+
+
+  } catch (err) {
+    next(err)
+  }
+}
