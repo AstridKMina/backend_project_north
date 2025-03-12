@@ -1,5 +1,4 @@
 const db = require("../db/connection");
-const format = require("pg-format");
 
 
 exports.fetchAllArticles = async (sort_by = "created_at", order = "ASC") => {
@@ -58,50 +57,6 @@ WHERE a.article_id = $1;
         return articlesResult.rows[0];
 
     } catch (err) { }
-};
-
-exports.fetchArticleCommentsById = async (article_id) => {
-    try {
-
-        const commentsQuery = `SELECT c.body, c.comment_id, c.votes, c.created_at,
-         c.article_id, 
-               c.author
-FROM comments c
-WHERE c.article_id = $1
-ORDER BY created_at DESC
-`
-
-        const queryParams = [article_id];
-
-        const commentsResult = await db.query(commentsQuery, queryParams);
-
-        if (!commentsResult.rows.length) {
-            return []
-        }
-
-        return commentsResult.rows;
-
-    } catch (err) {
-    }
-};
-
-exports.insertComments = async (article_id, body, username) => {
-    try {
-        const insertCommentsQuery = `
- INSERT INTO comments 
- (article_id, body, author) 
-         VALUES ($1, $2, $3)
-         RETURNING comment_id, article_id, body, author, created_at;`
-
-        const commentValues = [article_id, body, username];
-
-        const insertResult = await db.query(insertCommentsQuery, commentValues);
-
-        return insertResult.rows[0];
-
-    } catch (err) {
-        throw err
-    }
 };
 
 exports.updateArticleById = async (article_id, inc_votes) => {

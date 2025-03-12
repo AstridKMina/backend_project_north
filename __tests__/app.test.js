@@ -367,3 +367,34 @@ describe("PATCH /api/articles/:article_id", () => {
 
 });
 
+describe("DELETE /api/comments/:comment_id", () => {
+  test("200: Delete the comment by id", async () => {
+    const response = await request(app)
+      .delete("/api/comments/1")
+      .expect(200);
+
+    const comment = response.body
+
+    expect(comment).toEqual({msg: "Comment deletion was sucessed"});
+  });
+  test("400: Responds with an error when 'comment_id' is not a number", async () => {
+    const response = await request(app)
+      .delete("/api/comments/invalid_id")
+      .expect(400);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Invalid comment_id" });
+  });
+  test("404: Responds with an error when comment_id does not exist", async () => {
+    const response = await request(app)
+      .delete("/api/comments/9999")
+      .expect(404);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Comment not found" });
+  });
+
+});
+

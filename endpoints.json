@@ -214,5 +214,35 @@
         }
       }
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes a comment by its comment_id",
+    "parameters": {
+      "comment_id": {
+        "type": "integer",
+        "description": "The unique identifier of the comment to be deleted",
+        "required": true
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Successfully deleted the comment",
+        "body": {
+          "msg": "Comment deletion was successful"
+        }
+      },
+      "400": {
+        "description": "Invalid comment_id provided",
+        "body": {
+          "msg": "Invalid comment_id"
+        }
+      },
+      "404": {
+        "description": "The comment with the specified comment_id was not found",
+        "body": {
+          "msg": "Comment not found"
+        }
+      }
+    }
   }
 }
