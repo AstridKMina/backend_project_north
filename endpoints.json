@@ -93,5 +93,45 @@
            " comment_count": 5
           }
         ]
-    }
+    },
+    "GET /api/articles/:article_id/comments": {
+    "description": "Fetches a list of comments for a specific article identified by its article ID.",
+    "queries": [
+      {
+        "allowedValues": [
+          "created_at",
+          "article_id",
+          "comment_id",
+          "votes",
+          "body",
+          "author"
+        ]
+      }
+    ],
+    "params": [
+      {
+        "name": "article_id",
+        "type": "integer",
+        "description": "The ID of the article for which to fetch the comments."
+      }
+    ],
+    "exampleResponse": [
+      {
+        "comment_id": 1,
+        "article_id": 1,
+        "body": "This is a comment on the article.",
+        "votes": 10,
+        "created_at": "2021-01-01T00:00:00.000Z",
+        "author": "john_doe"
+      },
+      {
+        "comment_id": 2,
+        "article_id": 1,
+        "body": "This is another comment.",
+        "votes": 5,
+        "created_at": "2021-01-02T00:00:00.000Z",
+        "author": "jane_doe"
+      }
+    ]
+  }
 }

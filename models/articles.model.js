@@ -37,7 +37,6 @@ exports.fetchAllArticles = async (sort_by = "created_at", order = "ASC") => {
     }
 };
 
-
 exports.fetchArticleById = async (article_id) => {
     try {
         let baseQuery = `
@@ -60,3 +59,28 @@ WHERE a.article_id = $1;`
 
     } catch (err) { }
 }
+
+exports.fetchArticleCommentsById = async (article_id) => {
+    try {
+
+        const commentsQuery = `SELECT c.body, c.comment_id, c.votes, c.created_at,
+         c.article_id, 
+               c.author
+FROM comments c
+WHERE c.article_id = $1
+ORDER BY created_at DESC
+`
+
+        const queryParams = [article_id];
+
+        const commentsResult = await db.query(commentsQuery, queryParams);
+
+        if (!commentsResult.rows.length) {
+            return []
+        }
+
+        return commentsResult.rows;
+
+    } catch (err) {
+    }
+};

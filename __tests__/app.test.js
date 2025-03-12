@@ -174,5 +174,61 @@ describe("/api/articles?order=desc", () => {
   });
 });
 
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: Responds with an array of comments objects", async () => {
+
+    const response = await request(app)
+      .get("/api/articles/1/comments")
+      .expect(200);
+
+    const comments = response.body
+
+    expect(comments).toBeInstanceOf(Array);
+    expect(comments.length).toBeGreaterThan(0);
+
+    comments.forEach((comment) => {
+      expect(comment).toHaveProperty("author")
+      expect(comment).toHaveProperty("comment_id")
+      expect(comment).toHaveProperty("article_id")
+      expect(comment).toHaveProperty("body")
+      expect(comment).toHaveProperty("created_at")
+      expect(comment).toHaveProperty("votes")
+    })
+  })
+  test("200: Responds with an array of comments objects", async () => {
+
+    const response = await request(app)
+      .get("/api/articles/2/comments")
+      .expect(200);
+
+    const comments = response.body
+
+    expect(comments).toBeInstanceOf(Array);
+    expect(comments.length).toBe(0);
+
+  })
+
+  test("400: Responds with an error message for invalid article_id", async () => {
+
+    const response = await request(app)
+      .get("/api/articles/invalid_id/comments")
+      .expect(400);
+
+    const error = response.body
+
+    expect(error).toEqual({ msg: "Invalid article_id" });
+
+  })
+  test("404: Responds with an error message for not found article_id", async () => {
+
+    const response = await request(app)
+      .get("/api/articles/999/comments")
+      .expect(404);
+
+    const error = response.body;
+
+    expect(error).toEqual({ msg: "Article not found" });
+  })
+})
 
 

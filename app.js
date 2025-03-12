@@ -2,7 +2,7 @@ const express = require("express");
 const db = require("./db/connection")
 const { getTopics } = require("./controllers/topics.controller")
 const apiInfo = require('../backend_project_north/endpoints.json');
-const { getArticleById, getAllArticles } = require("./controllers/articles.controller");
+const { getArticleById, getAllArticles, getArticleCommentsById } = require("./controllers/articles.controller");
 
 const app = express()
 
@@ -19,7 +19,7 @@ app.get("/api", (req, res, next) => {
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getAllArticles);
-// app.get("/api/articles?sort_by=created_at&order=desc", getAllArticles);
+app.get("/api/articles/:article_id/comments", getArticleCommentsById );
 
 
 
