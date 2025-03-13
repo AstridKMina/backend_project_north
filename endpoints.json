@@ -90,44 +90,29 @@
     }
   },
   "GET /api/articles/:article_id/comments": {
-    "description": "Fetches a list of comments for a specific article identified by its article ID.",
-    "queries": [
-      {
-        "allowedValues": [
-          "created_at",
-          "article_id",
-          "comment_id",
-          "votes",
-          "body",
-          "author"
+    "description": "Fetches all comments associated with an article by its ID. The comments are ordered by `created_at` in descending order.",
+    "params": {
+      "article_id": {
+        "type": "integer",
+        "description": "The unique identifier for the article.",
+        "required": true
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Returns the list of comments for the specified article, ordered by `created_at` in descending order.",
+        "body": [
+          {
+            "comment_id": "integer",
+            "body": "string",
+            "votes": "integer",
+            "created_at": "string (ISO 8601 format)",
+            "article_id": "integer",
+            "author": "string"
+          }
         ]
       }
-    ],
-    "params": [
-      {
-        "name": "article_id",
-        "type": "integer",
-        "description": "The ID of the article for which to fetch the comments."
-      }
-    ],
-    "exampleResponse": [
-      {
-        "comment_id": 1,
-        "article_id": 1,
-        "body": "This is a comment on the article.",
-        "votes": 10,
-        "created_at": "2021-01-01T00:00:00.000Z",
-        "author": "john_doe"
-      },
-      {
-        "comment_id": 2,
-        "article_id": 1,
-        "body": "This is another comment.",
-        "votes": 5,
-        "created_at": "2021-01-02T00:00:00.000Z",
-        "author": "jane_doe"
-      }
-    ]
+    }
   },
   "POST /api/articles/:article_id/comments": {
     "description": "Adds a new comment to the specified article.",

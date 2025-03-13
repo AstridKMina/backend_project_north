@@ -27,7 +27,6 @@ exports.fetchAllArticles = async (sort_by = "created_at", order = "DESC", topic)
 
         const queryParams = []
 
-
         if (topic) {
 
             const topicExist = await db.query(`SELECT* FROM topics WHERE slug = $1;`, [topic]);
@@ -58,11 +57,14 @@ exports.fetchArticleById = async (article_id) => {
     try {
         const articleQuery = `
      SELECT a.article_id, a.title, a.body, a.created_at, a.votes, a.article_img_url,
-       u.username AS author, t.slug AS topic
+       u.username AS author, t.slug AS topic,
+       COUNT(c.comment_id) AS comment_count
 FROM articles a
 LEFT JOIN users u ON a.author = u.username
 LEFT JOIN topics t ON a.topic = t.slug
-WHERE a.article_id = $1; 
+LEFT JOIN comments c ON a.article_id = c.article_id
+WHERE a.article_id = $1
+GROUP BY a.article_id, u.username, t.slug; 
 `;
 
         const queryParams = [article_id];
@@ -72,6 +74,7 @@ WHERE a.article_id = $1;
         if (!articlesResult.rows.length) {
             throw new Error("Article not found");
         }
+
         return articlesResult.rows[0];
 
     } catch (err) { }

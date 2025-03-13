@@ -24,6 +24,10 @@ exports.getAllArticles = async (req, res, next) => {
       articles = await fetchAllArticles(sort_by, order)
 
     };
+
+    if(articles.length === 0) {
+      throw {status: 404 , msg:"Articles not found" }
+    }
     
     return res.status(200).send(articles);
 
