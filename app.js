@@ -1,7 +1,7 @@
 const express = require("express");
 const db = require("./db/connection")
 const { getTopics } = require("./controllers/topics.controller")
-const apiInfo = require('../backend_project_north/endpoints.json');
+const apiInfo = require('./endpoints.json');
 const { getArticleById, getAllArticles, patchArticle } = require("./controllers/articles.controller");
 const { postComments, getArticleCommentsById, deleteComment } = require("./controllers/comments.controller");
 const { getUsers } = require("./controllers/users.controller");

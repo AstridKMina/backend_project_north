@@ -9,7 +9,7 @@
     "test": "jest",
     "prepare": "husky install",
     "start": "node listen.js",
-    "seed-prod": "NODE_ENV=production npm run seed",
+    "seed-prod": "NODE_ENV=production node ./db/seeds/run-seed.js",
     "test-seed": "jest seed.test.js"
   },
   "repository": {
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/northcoders/be-nc-news#readme",
   "devDependencies": {
+    "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
     "husky": "^8.0.2",
     "jest": "^27.5.1",
