@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "description": "bc-nc-news",
   "main": "listen.js",
-  "scripts": {
-    "setup-dbs": "psql -f ./db/setup-dbs.sql",
-    "seed-dev": "node ./db/seeds/run-seed.js",
-    "test": "jest",
-    "prepare": "husky install",
-    "start": "node listen.js",
-    "seed-prod": "NODE_ENV=production node ./db/seeds/run-seed.js",
-    "test-seed": "jest seed.test.js"
-  },
+"scripts": {
+  "setup-dbs": "psql -f ./db/setup-dbs.sql",
+  "seed-dev": "node ./db/seeds/run-seed.js",
+  "test": "jest",
+  "prepare": "husky install",
+  "start": "node listen.js",
+  "seed-prod": "NODE_ENV=production node ./db/seeds/run-seed.js",
+  "test-seed": "jest seed.test.js",
+  "dev": "nodemon listen.js"  
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/northcoders/be-nc-news.git"

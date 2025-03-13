@@ -286,5 +286,25 @@
         }
       }
     ]
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "Updates the votes on a comment by the given comment_id.",
+    "request_body": {
+      "inc_votes": "Number (positive to upvote, negative to downvote)"
+    },
+    "response": {
+      "200": {
+        "comment_id": 1,
+        "votes": 11,
+        "body": "Comment text",
+        "author": "user1"
+      }
+    },
+    "400": {
+      "error": "Invalid request format"
+    },
+    "404": {
+      "error": "Comment not found"
+    }
   }
 }

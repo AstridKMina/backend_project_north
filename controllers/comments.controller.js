@@ -1,6 +1,6 @@
 const response = require("express");
 const db = require("../db/connection");
-const { insertComments, fetchArticleCommentsById, eliminateComment } = require("../models/comments.model");
+const { insertComments, fetchArticleCommentsById, eliminateComment, commentsVotesById } = require("../models/comments.model");
 const { fetchArticleById } = require("../models/articles.model");
 
 exports.getArticleCommentsById = async (req, res, next) => {
@@ -62,19 +62,48 @@ exports.deleteComment = async (req, res, next) => {
     try {
         const { comment_id } = req.params;
 
-        if(isNaN(comment_id)) {
-            res.status(400).send({msg: "Invalid comment_id"});
+        if (isNaN(comment_id)) {
+            res.status(400).send({ msg: "Invalid comment_id" });
         }
 
         const deleteC = await eliminateComment(comment_id);
 
         if (deleteC.length === 0) {
             return res.status(404).send({ msg: "Comment not found" });
-          }
+        }
 
-        res.status(200).send({msg: "Comment deletion was sucessed"})
+        res.status(200).send({ msg: "Comment deletion was sucessed" })
 
     } catch (err) {
         next(err)
+    }
+}
+
+exports.updateCommentVotes = async (req, res, next) => {
+    try {
+
+        const { comment_id } = req.params;
+
+        const { inc_votes } = req.body;
+
+
+        const updatedComment = await commentsVotesById(comment_id, inc_votes);
+ 
+
+        if (updatedComment.length === 0) {
+            return res.status(404).json({ msg: "The comment does not exist" });
+        }
+
+        res.status(200).send({ msg:'Votes updated successfully' , updatedComment });
+
+
+    } catch (err) {
+
+        if (err.code === '22P02') {
+            res.status(400).send({msg: 'Invalid format: provide a number'})
+          }
+
+        next(err)
+
     }
 }

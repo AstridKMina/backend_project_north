@@ -28,8 +28,6 @@ exports.fetchUsersByUsername = async (username) => {
 
         const users = await db.query(usersQuery,queryParams);
 
-        console.log("yo soy tu users, a que ta contenta")
-
         return users.rows;
 
     } catch (err) {

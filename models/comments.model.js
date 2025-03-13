@@ -69,3 +69,36 @@ exports.eliminateComment = async (comment_id) => {
     throw err;
   }
 };
+
+exports.commentsVotesById = async (comment_id, inc_votes) => {
+
+  try {
+
+    const query1 = `SELECT *
+  FROM comments
+  WHERE comment_id = $1
+  ;`
+
+    const existedComment = await db.query(query1, [comment_id]);
+
+    if (existedComment.rows.length === 0) {
+      return [];
+    };
+
+
+    const query2 = `
+  UPDATE comments 
+  SET votes = votes + $1
+  WHERE comment_id = $2
+  RETURNING *;`
+
+    const queryParams = [inc_votes, comment_id];
+
+    const commentVotes = await db.query(query2, queryParams);
+
+    return commentVotes.rows[0];
+
+  } catch (err) {
+    throw err
+  }
+};

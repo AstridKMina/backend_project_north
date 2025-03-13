@@ -3,7 +3,7 @@ const db = require("./db/connection")
 const { getTopics } = require("./controllers/topics.controller")
 const apiInfo = require('./endpoints.json');
 const { getArticleById, getAllArticles, patchArticle } = require("./controllers/articles.controller");
-const { postComments, getArticleCommentsById, deleteComment } = require("./controllers/comments.controller");
+const { postComments, getArticleCommentsById, deleteComment, updateCommentVotes } = require("./controllers/comments.controller");
 const { getUsers, getUsersByUsername } = require("./controllers/users.controller");
 
 const app = express()
@@ -36,6 +36,8 @@ app.patch("/api/articles/:article_id", patchArticle);
 
 app.delete("/api/comments/:comment_id", deleteComment);
 
+app.patch("/api/comments/:comment_id", updateCommentVotes);
+
 app.get("/api/users", getUsers);
 
 app.get("/api/users/:username", getUsersByUsername);
@@ -43,7 +45,7 @@ app.get("/api/users/:username", getUsersByUsername);
 
 
 app.use((err, req, res, next) => {
-    // console.error(err);
+    console.error(err);
     if (err.status && err.msg) {
       return res.status(err.status).send({ msg: err.msg });
   }
