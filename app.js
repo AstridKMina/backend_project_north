@@ -10,6 +10,10 @@ const app = express()
 
 app.use(express.json())
 
+app.get('/', (req, res) => {
+  res.send('¡Bienvenido a la aplicación!');
+});
+
 app.get("/api", (req, res, next) => {
     try {
       res.status(200).json({endpoints: apiInfo});
