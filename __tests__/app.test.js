@@ -610,4 +610,45 @@ describe("GET /api/users", () => {
 
     expect(error).toEqual({ msg: "Users not found" });
   });
+  describe("GET /api/users/:username", () => {
+    test("200: Responds with an array with an user filter by id", async () => {
+  
+      const response = await request(app)
+        .get("/api/users/butter_bridge")
+        .expect(200);
+  
+      const user = response.body
+
+      console.log(user, "acuerdate de borrarme 😏")
+  
+      expect(user).toBeInstanceOf(Array);
+      expect(user.length).toBeGreaterThan(0);
+  
+      user.forEach((user_username) => {
+        expect(user_username).toHaveProperty("name");
+        expect(user_username).toHaveProperty("username");
+        expect(user_username).toHaveProperty("avatar_url");
+      })
+    });
+    test("400: Responds with an error when invalid user provided", async () => {
+      const response = await request(app)
+        .get("/api/users/$")
+        .expect(400);
+  
+      const error = response.body
+  
+      expect(error).toEqual({ msg: "Invalid username provided" });
+    });
+    test("404: Responds with an error when not user found", async () => {
+      await db.query("DELETE FROM users;");
+  
+      const response = await request(app)
+        .get("/api/users/notExistedUser")
+        .expect(404);
+  
+      const error = response.body
+  
+      expect(error).toEqual({ msg: "User not found" });
+    });
+  });
 });

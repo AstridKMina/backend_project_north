@@ -245,5 +245,46 @@
         }
       }
     }
+  },
+  "GET /api/users/:username": {
+    "description": "This endpoint allows you to retrieve a user by their username.",
+    "endpoints": [
+      {
+        "path": "/users",
+        "method": "GET",
+        "description": "Get a user by username",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "The username of the user you want to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found",
+            "example": {
+              "username": "johndoe",
+              "email": "johndoe@example.com",
+              "name": "John Doe"
+            }
+          },
+          "400": {
+            "description": "Invalid username",
+            "example": {
+              "msg": "Invalid username provided"
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "example": {
+              "msg": "User not found"
+            }
+          }
+        }
+      }
+    ]
   }
 }
