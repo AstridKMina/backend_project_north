@@ -18,7 +18,7 @@ exports.fetchAllArticles = async (sort_by = "created_at", order = "DESC", topic)
         let baseQuery = `
             SELECT a.article_id, a.title, a.created_at, a.votes, a.article_img_url,
                    u.username AS author, t.slug AS topic,
-                   COUNT(c.comment_id) AS comment_count
+                   COUNT(c.comment_id)::INT AS comment_count
             FROM articles a
             LEFT JOIN users u ON a.author = u.username
             LEFT JOIN topics t ON a.topic = t.slug
@@ -58,7 +58,7 @@ exports.fetchArticleById = async (article_id) => {
         const articleQuery = `
      SELECT a.article_id, a.title, a.body, a.created_at, a.votes, a.article_img_url,
        u.username AS author, t.slug AS topic,
-       COUNT(c.comment_id) AS comment_count
+       COUNT(c.comment_id)::INT AS comment_count
 FROM articles a
 LEFT JOIN users u ON a.author = u.username
 LEFT JOIN topics t ON a.topic = t.slug
@@ -96,6 +96,34 @@ RETURNING *;`;
         }
 
         return result.rows[0];
+
+    } catch (err) {
+        throw err
+    }
+};
+
+exports.insertArticle = async (title, topic, author, body, article_img_url = "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700") => {
+
+    try {
+
+        const query = `
+INSERT INTO articles
+(title, topic, author, body, article_img_url)
+VALUES ($1, $2, $3, $4, $5) 
+RETURNING *;
+`
+        const queryParams = [title, topic, author, body, article_img_url];
+
+
+        const newArticle = await db.query(query, queryParams);
+
+        const getCommentCount = await this.fetchArticleById(newArticle.rows[0].article_id);
+        const commentCount = getCommentCount.comment_count ;
+    
+       
+        newArticle.rows[0].comment_count = commentCount;
+
+        return newArticle.rows[0];
 
     } catch (err) {
         throw err

@@ -306,5 +306,63 @@
     "404": {
       "error": "Comment not found"
     }
+  },
+  "POST /api/articles": {
+    "description": "Adds a new article. If no image is provided, a default image is assigned.",
+    "request_body": {
+      "author": {
+        "type": "string",
+        "required": true,
+        "description": "The author of the article."
+      },
+      "title": {
+        "type": "string",
+        "required": true,
+        "description": "The title of the article."
+      },
+      "body": {
+        "type": "string",
+        "required": true,
+        "description": "The content of the article."
+      },
+      "topic": {
+        "type": "string",
+        "required": true,
+        "description": "The topic or category of the article (e.g., tech, politics)."
+      },
+      "article_img_url": {
+        "type": "string",
+        "required": false,
+        "description": "The URL of the article image. If not provided, a default image will be used."
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Article successfully created.",
+        "example": {
+          "article_id": 1,
+          "author": "John Doe",
+          "title": "New Article",
+          "body": "This is the body of the article.",
+          "topic": "Tech",
+          "article_img_url": "https://example.com/default-image.jpg",
+          "votes": 0,
+          "created_at": "2025-03-14T15:30:00.000Z",
+          "comment_count": 0
+        }
+      },
+      "400": {
+        "description": "Bad request (missing required field).",
+        "example": {
+          "msg": "Missing required fields: author, title, body, and topic are required."
+        }
+      },
+      "500": {
+        "description": "Internal Server Error.",
+        "example": {
+          "msg": "An unexpected error occurred. Please try again later."
+        }
+      }
+    }
   }
 }

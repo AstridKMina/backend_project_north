@@ -8,6 +8,7 @@ const {
 } = require("./utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
+ 
   return db.query(`DROP TABLE IF EXISTS comments`)
     .then(() => db.query(`DROP TABLE IF EXISTS articles`))
     .then(() => db.query(`DROP TABLE IF EXISTS users`))
@@ -95,8 +96,9 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     .then(() => {
      
     });
-};
 
+
+};
 
 
 module.exports = seed;
