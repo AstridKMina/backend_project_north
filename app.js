@@ -5,8 +5,11 @@ const apiInfo = require('./endpoints.json');
 const { getArticleById, getAllArticles, patchArticle, postNewArticle } = require("./controllers/articles.controller");
 const { postComments, getArticleCommentsById, deleteComment, updateCommentVotes } = require("./controllers/comments.controller");
 const { getUsers, getUsersByUsername } = require("./controllers/users.controller");
+const cors = require("cors");
 
 const app = express()
+
+app.use(cors())
 
 app.use(express.json())
 
@@ -47,7 +50,7 @@ app.post("/api/articles",postNewArticle);
 
 
 app.use((err, req, res, next) => {
-    console.error(err);
+    // console.error(err);
     if (err.status && err.msg) {
       return res.status(err.status).send({ msg: err.msg });
   }
