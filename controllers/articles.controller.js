@@ -5,7 +5,7 @@ const { fetchArticleById, fetchAllArticles, updateArticleById, insertArticle } =
 exports.getAllArticles = async (req, res, next) => {
   try {
 
-    const { sort_by = "created_at", order = "DESC", topic } = req.query;
+    const { sort_by = "created_at", order = "DESC", topic, limit=10, p=1 } = req.query;
 
     if (topic && typeof topic !== "string") {
       throw { status: 400, msg: "Invalid topic" }
@@ -16,15 +16,15 @@ exports.getAllArticles = async (req, res, next) => {
 
     if (topic) {
 
-      articles = await fetchAllArticles(sort_by, order, topic)
+      articles = await fetchAllArticles(sort_by, order, topic, limit, p);
 
     } else {
 
-      articles = await fetchAllArticles(sort_by, order)
+      articles = await fetchAllArticles(sort_by, order, "", limit, p);
 
     };
 
-    if (articles.length === 0) {
+    if (articles.articles.length === 0) {
       throw { status: 404, msg: "Articles not found" }
     }
 
@@ -36,7 +36,7 @@ exports.getAllArticles = async (req, res, next) => {
     }
     next(err)
   }
-}
+};
 
 exports.getArticleById = async (req, res, next) => {
   try {
@@ -56,7 +56,7 @@ exports.getArticleById = async (req, res, next) => {
   } catch (err) {
     next(err)
   }
-}
+};
 
 exports.patchArticle = async (req, res, next) => {
   try {
@@ -83,7 +83,7 @@ exports.patchArticle = async (req, res, next) => {
   } catch (err) {
     next(err)
   }
-}
+};
 
 exports.postNewArticle = async (req, res, next) => {
   try {
@@ -124,4 +124,4 @@ exports.postNewArticle = async (req, res, next) => {
     next(err)
   }
 
-}
+};

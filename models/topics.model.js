@@ -5,7 +5,7 @@ exports.fetchAllTopics = async () => {
     try {
         let baseQuery = `
         SELECT
-        slug, description
+        slug, description, img_url
         FROM topics;`;
 
         const result = await db.query(baseQuery);

@@ -1,7 +1,7 @@
 const db = require("../db/connection");
 
 
-exports.fetchAllArticles = async (sort_by = "created_at", order = "DESC", topic) => {
+exports.fetchAllArticles = async (sort_by = "created_at", order = "DESC", topic, limit = 10, p = 1) => {
     try {
         const validSortColumns = ["created_at", "article_id", "title", "votes", "article_img_url", "author", "topic", "comment_count"];
 
@@ -26,6 +26,7 @@ exports.fetchAllArticles = async (sort_by = "created_at", order = "DESC", topic)
        `;
 
         const queryParams = []
+        let placeholder = 1;
 
         if (topic) {
 
@@ -35,22 +36,53 @@ exports.fetchAllArticles = async (sort_by = "created_at", order = "DESC", topic)
                 throw { status: 404, msg: "Topic not found" };
             }
 
-            baseQuery += ` WHERE t.slug = $1`;
+            baseQuery += ` WHERE t.slug = $${placeholder}`;
             queryParams.push(topic)
+            placeholder++
         }
 
         baseQuery += ` GROUP BY a.article_id, a.title, a.created_at, a.votes, a.article_img_url, u.username, t.slug`;
-        baseQuery += ` ORDER BY ${sort_by} ${order.toUpperCase()}`;
+        baseQuery += ` ORDER BY ${sort_by} ${order.toUpperCase()} `;
 
+        const offset = (p - 1) * limit;
+
+        baseQuery += `LIMIT $${placeholder} OFFSET $${placeholder + 1};`;
+
+        queryParams.push(limit, offset);
+
+        console.log("vamos para la playa")
 
         const result = await db.query(baseQuery, queryParams);
 
-        return result.rows;
+        console.log("vamos para la playa ps no te llevo")
+
+        let countQuery = `
+        SELECT COUNT(*) AS total_count
+        FROM articles a
+        LEFT JOIN users u ON a.author = u.username
+        LEFT JOIN topics t ON a.topic = t.slug
+        LEFT JOIN comments c ON a.article_id = c.article_id
+    `;
+
+    if (topic) {
+        countQuery += ` WHERE t.slug = $1`;
+    }
+
+    const countResult = await db.query(countQuery, topic ? [topic] : []);
+
+  
+    const totalCount = countResult.rows[0].total_count;
+
+ 
+    return {
+        articles: result.rows,
+        total_count: totalCount
+    };
 
 
     } catch (err) {
         throw err;
-    }
+    };
 };
 
 exports.fetchArticleById = async (article_id) => {
@@ -118,9 +150,9 @@ RETURNING *;
         const newArticle = await db.query(query, queryParams);
 
         const getCommentCount = await this.fetchArticleById(newArticle.rows[0].article_id);
-        const commentCount = getCommentCount.comment_count ;
-    
-       
+        const commentCount = getCommentCount.comment_count;
+
+
         newArticle.rows[0].comment_count = commentCount;
 
         return newArticle.rows[0];

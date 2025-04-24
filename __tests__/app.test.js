@@ -157,7 +157,7 @@ describe("Articles endpoints test", () => {
         .get("/api/articles")
         .expect(200);
 
-      const articles = response.body
+      const articles = response.body.articles
 
 
       expect(articles).toBeInstanceOf(Array);
@@ -192,7 +192,7 @@ describe("Articles endpoints test", () => {
           .get("/api/articles?sort_by=created_at&order=ASC")
           .expect(200)
 
-        const result = response.body
+        const result = response.body.articles
 
         expect(result).toBeSortedBy("created_at", { ascending: true });
       });
@@ -202,7 +202,7 @@ describe("Articles endpoints test", () => {
           .get("/api/articles?sort_by=created_at&order=DESC")
           .expect(200)
 
-        const result = response.body
+        const result = response.body.articles
 
         expect(result).toBeSortedBy("created_at", { descending: true });
 
@@ -234,7 +234,7 @@ describe("Articles endpoints test", () => {
           .get("/api/articles?sort_by=created_at&order=DESC")
           .expect(200)
 
-        const result = response.body
+        const result = response.body.articles
 
         expect(result).toBeSortedBy("created_at", { descending: true });
       });
@@ -244,7 +244,7 @@ describe("Articles endpoints test", () => {
           .get("/api/articles?sort_by=author&order=ASC")
           .expect(200)
 
-        const result = response.body
+        const result = response.body.articles
 
         expect(result).toBeSortedBy("author", { ascending: true });
 
@@ -256,7 +256,7 @@ describe("Articles endpoints test", () => {
           .get("/api/articles?sort_by=created_at")
           .expect(200)
 
-        const result = response.body
+        const result = response.body.articles
 
         expect(result).toBeSortedBy("created_at", { descending: true });
 
@@ -267,7 +267,7 @@ describe("Articles endpoints test", () => {
           .get("/api/articles?order=ASC")
           .expect(200)
 
-        const result = response.body
+        const result = response.body.articles
 
         expect(result).toBeSortedBy("created_at", { ascending: true });
 
@@ -297,15 +297,15 @@ describe("Articles endpoints test", () => {
     describe("GET /api/articles?topic=anything", () => {
       test("200: Responds with articles filter for topic value", async () => {
         const response = await request(app)
-          .get("/api/articles?topic=mitch")
+          .get("/api/articles?topic=cats")
           .expect(200)
 
-        const articlesByTopic = response.body
+        const articlesByTopic = response.body.articles
 
         expect(articlesByTopic).toBeInstanceOf(Array);
 
         expect(articlesByTopic.length).toBeGreaterThan(0);
-        expect(articlesByTopic.every((article) => { return article.topic === "mitch" })).toBe(true);
+        expect(articlesByTopic.every((article) => { return article.topic === "cats" })).toBe(true);
 
       });
       test("200: Responds with articles when not topic value", async () => {
@@ -313,7 +313,7 @@ describe("Articles endpoints test", () => {
           .get("/api/articles")
           .expect(200)
 
-        const articlesByTopic = response.body
+        const articlesByTopic = response.body.articles
 
         expect(articlesByTopic).toBeInstanceOf(Array);
 
